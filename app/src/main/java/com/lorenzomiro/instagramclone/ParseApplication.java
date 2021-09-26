@@ -2,6 +2,8 @@ package com.lorenzomiro.instagramclone;
 
 import android.app.Application;
 
+import com.parse.Parse;
+
 public class ParseApplication extends Application {
 
     @Override
