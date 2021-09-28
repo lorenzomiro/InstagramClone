@@ -1,7 +1,10 @@
 package com.lorenzomiro.instagramclone;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -108,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Start the image capture intent to take photo
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            activity_launcher.launch(intent);
         }
     }
 
@@ -168,6 +176,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    ActivityResultLauncher<Intent> activity_launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+
+                Bitmap taken_image = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+
+                ivPostImage.setImageBitmap(taken_image);
+
+            } else {
+
+                Toast.makeText(MainActivity.this, "Photo not taken", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+);
 
     private void queryPosts() {
 
