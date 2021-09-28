@@ -27,6 +27,7 @@ import androidx.core.content.FileProvider;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -90,9 +91,17 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+                if (photoFile == null || ivPostImage.getDrawable() == null) {
+
+                    Toast.makeText(MainActivity.this, "No image data.", Toast.LENGTH_SHORT).show();
+
+                    return;
+
+                }
+
                 ParseUser currentUser = ParseUser.getCurrentUser();
 
-                savePost(description, currentUser);
+                savePost(description, currentUser, photoFile);
 
             }
         });
@@ -142,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         return new File(mediaStorageDir.getPath() + File.separator + photoFileName);
     }
 
-    private void savePost(String description, ParseUser currentUser) {
+    private void savePost(String description, ParseUser currentUser, File photoFile) {
 
         Post post = new Post();
 
@@ -150,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         post.setDescription(description);
 
-//        post.setImage();
+        post.setImage(new ParseFile(photoFile));
 
         post.setUser(currentUser);
 
@@ -172,6 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
                 etDescription.setText("");
 
+                //clear image view
+
+                ivPostImage.setImageResource(0);
+
             }
         });
 
@@ -192,9 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-    }
-
-);
+    });
 
     private void queryPosts() {
 
