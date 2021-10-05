@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 420;
+
+    private BottomNavigationView bottom_navigation_view;
 
     private EditText etDescription;
 
@@ -60,13 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        etDescription = findViewById(R.id.etDescription);
-
-        btnCaptureImage = findViewById(R.id.btnCaptureImage);
-
-        ivPostImage = findViewById(R.id.ivPostImage);
-
-        btnSubmit = findViewById(R.id.btnSubmit);
+        bottom_navigation_view = findViewById(R.id.bottomNavigation);
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override

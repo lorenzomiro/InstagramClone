@@ -14,6 +14,7 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +25,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
 
     private Button login_button;
+
+    private Button sign_up_button;
 
 
     @Override
@@ -43,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
 
         login_button = findViewById(R.id.login_button);
 
+        sign_up_button = findViewById(R.id.sign_up_button);
+
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +59,45 @@ public class LoginActivity extends AppCompatActivity {
 
                 login_user(username, password);
 
+            }
+        });
+
+        sign_up_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick sign up button");
+
+                String username = etUsername.getText().toString();
+
+                String password = etPassword.getText().toString();
+
+                create_user(username, password);
+
+            }
+        });
+    }
+
+    private void create_user(String username, String password){
+        // Create the ParseUser
+        ParseUser user = new ParseUser();
+        // Set core properties
+        user.setUsername(username);
+        user.setPassword(password);
+        //user.setEmail("email@example.com");
+        // Set custom properties
+        //user.put("phone", "650-253-0000");
+        // Invoke signUpInBackground
+        user.signUpInBackground(new SignUpCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    go_to_main_activity();
+                    Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                    // Hooray! Let them use the app now.
+                } else {
+                    Log.e(TAG, "Issue with sign up", e);
+                    Toast.makeText(LoginActivity.this, "Issue with sign up.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
     }
