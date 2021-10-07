@@ -1,6 +1,5 @@
 package com.lorenzomiro.instagramclone.fragments;
 
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,12 +24,16 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A simple {@link Fragment} subclass.
+ */
 public class PostFragment extends Fragment {
 
-    public static final String TAG = "PostsFragment";
+    public static final String TAG = "PostFragment";
     private RecyclerView rvPosts;
     protected PostsAdapter adapter;
     protected List<Post> allPosts;
+    protected SwipeRefreshLayout swipeContainer; //Added
 
     public PostFragment() {
         // Required empty public constructor
@@ -58,6 +62,20 @@ public class PostFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         // 4. set the layout manager on the recycler view
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryPosts();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         queryPosts();
     }
 
@@ -77,8 +95,12 @@ public class PostFragment extends Fragment {
                 for (Post post : posts) {
                     Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
+                allPosts.clear();
                 allPosts.addAll(posts); //Updating adapter with current posts with these two lines
                 adapter.notifyDataSetChanged();
+//                posts.clear();
+//                adapter.addAll(posts);
+                swipeContainer.setRefreshing(false);
             }
         }); //retrieve all the posts
     }
